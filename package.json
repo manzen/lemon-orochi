@@ -1,0 +1,23 @@
+{
+  "name": "lemon-orochi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manzen/lemon-orochi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manzen/lemon-orochi/issues"
+  },
+  "homepage": "https://github.com/manzen/lemon-orochi#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "serialport": "^7.1.5"
+  }
+}
