@@ -4,6 +4,13 @@ const SerialPort = require("serialport");
 const port = 3000;
 const arduinoCOMPort = "COM3";
 
+const player = require('play-sound')(opts = {})
+
+const audio = player.play('sample.mp3', function(err){
+    if (err && !err.killed) throw err
+});
+// audio.kill();
+
 const arduinoSerialPort = new SerialPort(arduinoCOMPort, {
     baudRate: 9600
 });
