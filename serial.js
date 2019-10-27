@@ -82,13 +82,13 @@ parser.on('data', data => {
                 if (err) throw err
                 is_play = false
                 // 音声が停止したらTwilioAPIを呼び出して電話をかける
-                // client.calls
-                //     .create({
-                //         url: 'http://twimlets.com/echo?Twiml=' + querystring.escape(twiml),
-                //         to: process.env.TO,
-                //         from: process.env.FROM
-                //     })
-                //     .then(call => console.log(call.sid));
+                client.calls
+                    .create({
+                        url: 'http://twimlets.com/echo?Twiml=' + querystring.escape(twiml),
+                        to: process.env.TO,
+                        from: process.env.FROM
+                    })
+                    .then(call => console.log(call.sid));
             });
         }
     }
