@@ -21,13 +21,16 @@ port.on('open', () => {
 
 let play_count = 0
 let audio = null
+let is_play = false
 
 parser.on('data', data => {
     console.log('data: ', data)
 
-    let is_operation = true
-    let is_play = true
-    let pressure = 0
+    input = data.split(',');
+
+    let is_push = data[2]
+    let is_gyro = data[1]
+    let pressure = data[0]
     let volume = null
 
     // 音量設定
@@ -37,8 +40,9 @@ parser.on('data', data => {
         volume = 1
     }
 
-    if (is_operation) {
+    if (is_push === "1" && is_gyro === "1") {
         play_count += 1
+        is_play = true
         // 音声再生
         if (is_play) {
             // TODO　音声ファイルを出し分ける
@@ -54,6 +58,7 @@ parser.on('data', data => {
                     .then(call => console.log(call.sid));
             });
         } else if (!is_play && !audio) {
+            is_play = false
             audio.kill()
         }
     }
