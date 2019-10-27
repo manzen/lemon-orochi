@@ -7,7 +7,7 @@ const querystring = require('querystring');
 const url = "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/illbeback.mp3";
 const twiml = '<Response><Play loop="1">' + url + '</Play></Response>';
 
-const PATH = '/dev/cu.usbmodem14401'
+const PATH = '/dev/cu.usbmodem14301'
 
 const SerialPort = require('serialport')
 const Readline = require('@serialport/parser-readline')
@@ -23,43 +23,73 @@ let play_count = 0
 let audio = null
 let is_play = false
 
+let HIGH_VOICES = [
+    'voices/gya1.mp3',
+    'voices/lemonshiru.mp3',
+    'voices/uhooooo.mp3',
+    'voices/uryyyyy.mp3'
+]
+
+let LOW_VOICES = [
+    'voices/a.mp3',
+    'voices/ita.mp3',
+    'voices/i.mp3',
+    'voices/ua.mp3'
+]
+
 parser.on('data', data => {
     console.log('data: ', data)
+    console.log(play_count + "回目")
 
-    input = data.split(',');
+    let input = data.split(',');
 
-    let is_push = data[2]
-    let is_gyro = data[1]
-    let pressure = data[0]
+    console.log(input)
+
+    let is_push = input[2].slice(0, 1)
+    let pressure = input[0]
     let volume = null
 
-    // 音量設定
-    if (!isNaN(pressure) && pressure > 0 && pressure < 500) { // 感圧センサーから強い圧力を感じたら、音量を大きく
-        volume = 10
-    } else { // 感圧センサーから弱い圧力を感じたら、音量を小さく
-        volume = 1
-    }
+    console.log(volume)
 
-    if (is_push === "1" && is_gyro === "1") {
+    if (is_push === "1" && !is_play) {
         play_count += 1
         is_play = true
+        let voice = null
+
+        // 音量設定
+        if (!isNaN(pressure) && pressure > 0 && pressure < 500) { // 感圧センサーから強い圧力を感じたら、音量を大きく
+            volume = 10
+            voice = HIGH_VOICES[Math.floor(Math.random() * HIGH_VOICES.length)]
+        } else { // 感圧センサーから弱い圧力を感じたら、音量を小さく
+            volume = 1
+            voice = LOW_VOICES[Math.floor(Math.random() * LOW_VOICES.length)]
+        }
+
+        if (play_count % 5 === 0) {
+            voice = 'voices/arigato.mp3'
+        }
+
         // 音声再生
         if (is_play) {
-            // TODO　音声ファイルを出し分ける
-            audio = player.play('sample.mp3', { afplay: ['-v', volume ] }, function(err){
+            port.write(Buffer.from([play_count]), (err, results) => {
+                if(err) {
+                    console.log(`error : ${err}`)
+                }
+                console.log(`result : ${results}`)
+            })
+            console.log("再生します")
+            audio = player.play(voice, { afplay: ['-v', volume ] }, function(err){
                 if (err) throw err
+                is_play = false
                 // 音声が停止したらTwilioAPIを呼び出して電話をかける
-                client.calls
-                    .create({
-                        url: 'http://twimlets.com/echo?Twiml=' + querystring.escape(twiml),
-                        to: process.env.TO,
-                        from: process.env.FROM
-                    })
-                    .then(call => console.log(call.sid));
+                // client.calls
+                //     .create({
+                //         url: 'http://twimlets.com/echo?Twiml=' + querystring.escape(twiml),
+                //         to: process.env.TO,
+                //         from: process.env.FROM
+                //     })
+                //     .then(call => console.log(call.sid));
             });
-        } else if (!is_play && !audio) {
-            is_play = false
-            audio.kill()
         }
     }
 })
