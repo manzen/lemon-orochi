@@ -4,10 +4,13 @@ const authToken = process.env.AUTH_TOKEN;
 const player = require('play-sound')(opts = {})
 const client = require('twilio')(accountSid, authToken);
 const querystring = require('querystring');
-const url = "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/illbeback.mp3";
-const twiml = '<Response><Play loop="1">' + url + '</Play></Response>';
 
-const PATH = '/dev/cu.usbmodem14301'
+const VOICE_URLS = [
+    "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/illbeback.mp3",
+    "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/saichen.mp3"
+]
+
+const PATH = '/dev/cu.usbmodem143201'
 
 const SerialPort = require('serialport')
 const Readline = require('@serialport/parser-readline')
@@ -81,6 +84,12 @@ parser.on('data', data => {
             audio = player.play(voice, { afplay: ['-v', volume ] }, function(err){
                 if (err) throw err
                 is_play = false
+                const url = VOICE_URLS[Math.floor(Math.random() * VOICE_URLS.length)];
+                let twiml = '<Response><Play loop="1">' + url + '</Play></Response>';
+                if (play_count === 100) {
+                    let url = "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/lemon.mp3"
+                    twiml = '<Response><Play loop="1">' + url + '</Play></Response>';
+                }
                 // 音声が停止したらTwilioAPIを呼び出して電話をかける
                 client.calls
                     .create({
