@@ -6,8 +6,8 @@ const client = require('twilio')(accountSid, authToken);
 const querystring = require('querystring');
 
 const VOICE_URLS = [
-    "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/illbeback.mp3",
-    "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/saichen.mp3"
+    "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/antanosiborikata.mp3",
+    "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/watasianntasika.mp3"
 ]
 
 const PATH = '/dev/cu.usbmodem143201'
@@ -27,17 +27,14 @@ let audio = null
 let is_play = false
 
 let HIGH_VOICES = [
-    'voices/gya1.mp3',
-    'voices/lemonshiru.mp3',
-    'voices/uhooooo.mp3',
-    'voices/uryyyyy.mp3'
+    'voices/iyaaa.mp3',
+    'voices/baka.mp3',
+    'voices/tyotto.mp3',
+    'voices/ugyaa.mp3'
 ]
 
 let LOW_VOICES = [
-    'voices/a.mp3',
-    'voices/ita.mp3',
-    'voices/i.mp3',
-    'voices/ua.mp3'
+    'voices/iya.mp3',
 ]
 
 parser.on('data', data => {
@@ -69,7 +66,7 @@ parser.on('data', data => {
         }
 
         if (play_count % 5 === 0) {
-            voice = 'voices/arigato.mp3'
+            voice = 'voices/betuniannta.mp3'
         }
 
         // 音声再生
