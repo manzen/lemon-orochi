@@ -10,7 +10,7 @@ const VOICE_URLS = [
     "https://remon-orochi.s3-ap-northeast-1.amazonaws.com/saichen.mp3"
 ]
 
-const PATH = '/dev/cu.usbmodem143201'
+const PATH = '/dev/cu.usbmodem145301'
 
 const SerialPort = require('serialport')
 const Readline = require('@serialport/parser-readline')
@@ -91,13 +91,15 @@ parser.on('data', data => {
                     twiml = '<Response><Play loop="1">' + url + '</Play></Response>';
                 }
                 // 音声が停止したらTwilioAPIを呼び出して電話をかける
-                client.calls
-                    .create({
-                        url: 'http://twimlets.com/echo?Twiml=' + querystring.escape(twiml),
-                        to: process.env.TO,
-                        from: process.env.FROM
-                    })
-                    .then(call => console.log(call.sid));
+                if (play_count % 5 === 0) {
+                    client.calls
+                        .create({
+                            url: 'http://twimlets.com/echo?Twiml=' + querystring.escape(twiml),
+                            to: process.env.TO,
+                            from: process.env.FROM
+                        })
+                        .then(call => console.log(call.sid));
+                }
             });
         }
     }
